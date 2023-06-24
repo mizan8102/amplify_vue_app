@@ -29,17 +29,8 @@
   </v-navigation-drawer>
 </template>
 
-<script>
-export default {
-  data: () => ({
-    drawer: true,
-    rail: true
-  }),
-
-  watch: {
-    group() {
-      this.drawer = false
-    },
-  },
-}
+<script lang="ts" setup>
+import { ref } from 'vue'
+const drawer=ref<boolean>(true);
+const rail=ref<boolean>(true);
 </script>
