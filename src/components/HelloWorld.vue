@@ -11,56 +11,23 @@
 
       <v-row class="d-flex align-center justify-center">
         <v-col cols="auto">
-          <v-btn
-            href="https://vuetifyjs.com/components/all/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-view-dashboard"
-              size="large"
-              start
-            />
+          <input type="file" @change="handleFileChange" />
 
-            Components
-          </v-btn>
         </v-col>
 
         <v-col cols="auto">
-          <v-btn
-            color="primary"
-            href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides"
-            min-width="228"
-            rel="noopener noreferrer"
-            size="x-large"
-            target="_blank"
-            variant="flat"
-          >
-            <v-icon
-              icon="mdi-speedometer"
-              size="large"
-              start
-            />
+          <v-btn color="primary" href="https://vuetifyjs.com/introduction/why-vuetify/#feature-guides" min-width="228"
+            rel="noopener noreferrer" size="x-large" target="_blank" variant="flat">
+            <v-icon icon="mdi-speedometer" size="large" start />
 
             Get Started
           </v-btn>
         </v-col>
 
         <v-col cols="auto">
-          <v-btn
-            href="https://community.vuetifyjs.com/"
-            min-width="164"
-            rel="noopener noreferrer"
-            target="_blank"
-            variant="text"
-          >
-            <v-icon
-              icon="mdi-account-group"
-              size="large"
-              start
-            />
+          <v-btn href="https://community.vuetifyjs.com/" min-width="164" rel="noopener noreferrer" target="_blank"
+            variant="text">
+            <v-icon icon="mdi-account-group" size="large" start />
 
             Community
           </v-btn>
@@ -71,5 +38,51 @@
 </template>
 
 <script lang="ts" setup>
-  //
+
+interface Model {
+  KP: number;
+  X: number;
+  Y: number;
+  Z: number;
+}
+
+function handleFileChange(event: Event): void {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  const reader = new FileReader();
+
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    const contents = e.target?.result as string;
+    const data = parseCSV(contents);
+    console.log(data[100]); // Process the data as needed
+  };
+
+  reader.onerror = (error: ProgressEvent<FileReader>) => {
+    console.error(error);
+  };
+
+  if (file) {
+    reader.readAsText(file);
+  }
+}
+
+function parseCSV(contents: string): Model[] {
+  const lines = contents.split('\n');
+  const headers = lines[0].split(',');
+
+  const data: Model[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const values = lines[i].split(',');
+    if (values.length === headers.length) {
+      const entry: Model = {
+        KP: parseInt(values[0], 10),
+        X: parseFloat(values[1]),
+        Y: parseFloat(values[2]),
+        Z: parseFloat(values[3]),
+      };
+      data.push(entry);
+    }
+  }
+  return data;
+}
+
 </script>
