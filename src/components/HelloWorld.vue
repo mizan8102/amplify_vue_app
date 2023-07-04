@@ -53,7 +53,7 @@ function handleFileChange(event: Event): void {
   reader.onload = (e: ProgressEvent<FileReader>) => {
     const contents = e.target?.result as string;
     const data = parseCSV(contents);
-    console.log(data[100]); // Process the data as needed
+    console.log(findMinMax(data)); // Process the data as needed
   };
 
   reader.onerror = (error: ProgressEvent<FileReader>) => {
@@ -84,5 +84,26 @@ function parseCSV(contents: string): Model[] {
   }
   return data;
 }
+
+function findMinMax(data: Model[]): { maxX: number, minX: number, maxY: number, minY: number, maxZ: number, minZ: number } {
+  let maxX = -Infinity;
+  let minX = Infinity;
+  let maxY = -Infinity;
+  let minY = Infinity;
+  let maxZ = -Infinity;
+  let minZ = Infinity;
+
+  for (const entry of data) {
+    maxX = Math.max(maxX, entry.X);
+    minX = Math.min(minX, entry.X);
+    maxY = Math.max(maxY, entry.Y);
+    minY = Math.min(minY, entry.Y);
+    maxZ = Math.max(maxZ, entry.Z);
+    minZ = Math.min(minZ, entry.Z);
+  }
+
+  return { maxX, minX, maxY, minY, maxZ, minZ };
+}
+
 
 </script>
